@@ -75,7 +75,8 @@ class Game extends React.Component {
       winInfo: {
         winner: null,
         winLine: []
-      }
+      },
+      currStep: 0
     };
   }
 
@@ -104,7 +105,8 @@ class Game extends React.Component {
       boardStatus: boardStatusCopy,
       nextPlayer: nextPlayer,
       stepHistory: stepHistory,
-      winInfo: winInfo
+      winInfo: winInfo,
+      currStep: stepHistory.length - 1
     });
   }
 
@@ -180,7 +182,8 @@ class Game extends React.Component {
   jumpTo(index) {
     const singleHistory = this.state.stepHistory[index];
     this.setState({
-      boardStatus: singleHistory.boardStatus
+      boardStatus: singleHistory.boardStatus,
+      currStep: index
     });
   }
 
@@ -212,13 +215,24 @@ class Game extends React.Component {
       historyList = this.state.stepHistory.map((step, index) => {
         const pos = step.currPosition;
         const historyTitle = index
-          ? `${step.currPlayer} (${parseInt(pos / 3, 10) + 1}, ${pos % 3 + 1})`
+          ? `${step.currPlayer} -> (${parseInt(pos / 3, 10) + 1}, ${pos % 3 +
+              1})`
           : "Game Start";
-        return (
-          <li key={index}>
-            <button onClick={() => this.jumpTo(index)}>{historyTitle}</button>
-          </li>
-        );
+        if (index === this.state.currStep) {
+          return (
+            <li key={index}>
+              <button onClick={() => this.jumpTo(index)}>
+                <strong>{historyTitle}</strong>
+              </button>
+            </li>
+          );
+        } else {
+          return (
+            <li key={index}>
+              <button onClick={() => this.jumpTo(index)}>{historyTitle}</button>
+            </li>
+          );
+        }
       });
     }
 
